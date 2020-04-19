@@ -8,6 +8,7 @@ Determination of the Precision-Recall point:
 
 # REFERENCES
 1- https://arxiv.org/pdf/1707.02131.pdf
+
 2- https://github.com/sounakdey/SigNet (Tensorflow -original)
 3- https://github.com/Aftaab99/OfflineSignatureVerification (Pytorch)
 4- https://www.kaggle.com/robinreni/signature-verification-dataset
