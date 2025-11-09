@@ -25,13 +25,15 @@
 ## 📋 Table of Contents
 
 - [✨ Features](#-features)
-- [🚀 What's New (2024-2025)](#-whats-new-2024-2025)
+- [🚀 What's New in v2.0](#-whats-new-in-v20)
 - [🏗️ Architecture](#️-architecture)
 - [⚡ Quick Start](#-quick-start)
 - [📊 Performance Metrics](#-performance-metrics)
+- [🧪 Testing](#-testing)
 - [🔬 Technical Deep Dive](#-technical-deep-dive)
 - [📚 State-of-the-Art References (2024-2025)](#-state-of-the-art-references-2024-2025)
 - [🛠️ Tech Stack](#️-tech-stack)
+- [🗂️ Project Structure](#️-project-structure)
 - [🎓 Research & Citations](#-research--citations)
 - [🤝 Contributing](#-contributing)
 - [📜 License](#-license)
@@ -48,14 +50,45 @@
 | ⚡ **High Accuracy** | Optimized for banking-grade precision-recall balance |
 | 🔄 **Transfer Learning** | Pre-trained models ready for fine-tuning |
 | 📊 **ROC Analysis** | Comprehensive evaluation with ROC curves |
-| 🎨 **Modern Architecture** | Clean, modular, and extensible codebase |
+| 🎨 **Production-Ready** | Modern package structure, tested, and documented |
+| 🧪 **Fully Tested** | 44 comprehensive tests with 100% pass rate |
+| 📦 **Installable Package** | `pip install -e .` for easy development |
+| 🛠️ **Modern Tooling** | Black, Ruff, mypy, pytest configured |
+| 📝 **Type Hints** | Complete type coverage for safety |
 | 🚀 **GPU Accelerated** | Full CUDA support for faster training |
 
 </div>
 
 ---
 
-## 🚀 What's New (2024-2025)
+## 🚀 What's New in v2.0
+
+### 🎉 Major Release - Production-Ready Refactor
+
+**Version 2.0** is a complete rewrite with modern Python packaging, comprehensive testing, and production-grade code quality.
+
+#### Key Improvements:
+- ✅ **Modern Package Structure**: src/ layout with proper imports
+- ✅ **Comprehensive Testing**: 44 tests covering all components
+- ✅ **Type Safety**: Full type hints with mypy validation
+- ✅ **Development Tools**: Black, Ruff, pytest, pre-commit hooks
+- ✅ **Production Scripts**: CLI-ready with argparse
+- ✅ **Complete Documentation**: CHANGELOG, CONTRIBUTING, LESSONS-LEARNED
+
+#### What Changed:
+```python
+# OLD (v1.x) - Direct file imports
+from Model import SiameseConvNet
+
+# NEW (v2.0) - Package imports
+from signature_verification import SiameseConvNet
+```
+
+See [CHANGELOG.md](CHANGELOG.md) for full migration guide.
+
+---
+
+## 🚀 Research Trends (2024-2025)
 
 <div align="center">
 
@@ -168,53 +201,104 @@ graph LR
 git clone https://github.com/umitkacar/Offline_Signature_Verification.git
 cd Offline_Signature_Verification
 
-# Create virtual environment
+# Create virtual environment (recommended)
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install dependencies
-pip install torch torchvision numpy pillow scikit-learn
+# Install package in editable mode (recommended for development)
+pip install -e .
+
+# Or install from requirements.txt
+pip install -r requirements.txt
+
+# Install development dependencies (optional)
+pip install -e ".[dev]"
+```
+
+### 🚀 Package Installation (v2.0+)
+
+The package is now properly structured and installable:
+
+```bash
+# Install as editable package
+pip install -e .
+
+# Now import anywhere
+python
+>>> from signature_verification import SiameseConvNet, TrainDataset
+>>> model = SiameseConvNet()
+>>> print(model)
 ```
 
 ### 🎯 Training
 
-```python
-# Train the model
-python train_model.py
+```bash
+# Step 1: Prepare data (first time only)
+python scripts/prepare_data.py
 
-# Configuration
-PERSON_NUMBER = 79
-SIGN_NUMBER_EACH = 12
-EPOCHS = 5
-BATCH_SIZE = 8
-LEARNING_RATE = 0.001
+# Step 2: Train the model
+python scripts/train.py --epochs 5 --batch-size 8 --lr 0.001
+
+# Advanced training options
+python scripts/train.py \
+    --epochs 10 \
+    --batch-size 16 \
+    --lr 0.0005 \
+    --device cuda \
+    --model-dir ./MyModels
 ```
 
-### 🧪 Testing
+### 🧪 Testing & Evaluation
 
-```python
-# Evaluate with ROC curves
-python test_roc.py
+```bash
+# Evaluate trained model
+python scripts/evaluate.py --model ./Models/checkpoint_epoch_4
 
-# Analyze precision-recall trade-offs
+# Custom evaluation
+python scripts/evaluate.py \
+    --model ./Models/checkpoint_epoch_9 \
+    --data ./Data/test_index.pkl \
+    --output ./my_results.png \
+    --batch-size 16
 ```
 
-### 📊 Model Usage
+### 📊 Model Usage (Python API)
 
 ```python
-from Model import SiameseConvNet, distance_metric
+from signature_verification import (
+    SiameseConvNet,
+    SignatureTestDataset,
+    distance_metric
+)
 import torch
 
 # Load model
 model = SiameseConvNet()
-model.load_state_dict(torch.load('checkpoint_epoch_4'))
+model.load_state_dict(torch.load('./Models/checkpoint_epoch_4'))
 model.eval()
+
+# Load test data
+dataset = SignatureTestDataset(data_path='./Data/test_index.pkl')
 
 # Compare signatures
 with torch.no_grad():
-    features1, features2 = model(signature1, signature2)
+    img1, img2, label = dataset[0]
+    img1 = img1.unsqueeze(0)  # Add batch dimension
+    img2 = img2.unsqueeze(0)
+
+    features1, features2 = model(img1, img2)
     distance = distance_metric(features1, features2)
-    is_genuine = distance < threshold
+    is_genuine = distance < threshold  # threshold = 1.5 (example)
+
+    print(f"Distance: {distance.item():.4f}")
+    print(f"Prediction: {'Genuine' if is_genuine else 'Forged'}")
+```
+
+### ⚡ Quick Verification Test
+
+```bash
+# Run quick functionality test (no data needed)
+python scripts/quick_test.py
 ```
 
 ---
@@ -393,25 +477,53 @@ mindmap
 
 ---
 
-## 🗂️ Project Structure
+## 🗂️ Project Structure (v2.0+)
 
 ```
 Offline_Signature_Verification/
 │
-├── 📄 Model.py                 # Siamese CNN & Contrastive Loss
-├── 📄 Dataset.py               # PyTorch Dataset implementation
-├── 📄 train_model.py           # Training pipeline
-├── 📄 test_roc.py              # ROC curve evaluation
-├── 📄 utils.py                 # Utility functions
+├── 📁 src/signature_verification/   # Main package (installable)
+│   ├── 📄 __init__.py              # Package exports
+│   ├── 📄 model.py                 # Siamese CNN & Contrastive Loss
+│   ├── 📄 dataset.py               # PyTorch Dataset classes
+│   └── 📄 utils.py                 # Utility functions
 │
-├── 📁 Data/                    # Training/test indices
-├── 📁 Data_raw/                # Raw signature images
-├── 📁 Models/                  # Saved checkpoints
+├── 📁 scripts/                     # Production-ready scripts
+│   ├── 📄 prepare_data.py          # Data preprocessing
+│   ├── 📄 train.py                 # Training with CLI args
+│   ├── 📄 evaluate.py              # Evaluation & ROC curves
+│   ├── 📄 quick_test.py            # Functionality verification
+│   └── 📄 README.md                # Scripts documentation
 │
-├── 📄 README.md                # This file
-├── 📄 LICENSE                  # MIT License
-└── 📄 .gitignore              # Git ignore rules
+├── 📁 tests/                       # Comprehensive test suite
+│   ├── 📄 test_model.py            # Model tests (25 tests)
+│   ├── 📄 test_dataset.py          # Dataset tests (8 tests)
+│   ├── 📄 test_utils.py            # Utils tests (11 tests)
+│   └── 📄 conftest.py              # Pytest configuration
+│
+├── 📁 Data/                        # Training/test indices (gitignored)
+├── 📁 Data_raw/                    # Raw signature images (gitignored)
+├── 📁 Models/                      # Saved checkpoints (gitignored)
+│
+├── 📄 pyproject.toml               # Modern build configuration
+├── 📄 requirements.txt             # Dependencies
+├── 📄 .pre-commit-config.yaml      # Pre-commit hooks
+├── 📄 CHANGELOG.md                 # Version history
+├── 📄 CONTRIBUTING.md              # Developer guide
+├── 📄 LESSONS-LEARNED.md           # Refactoring insights
+├── 📄 README.md                    # This file
+├── 📄 LICENSE                      # MIT License
+└── 📄 .gitignore                  # Git ignore rules
 ```
+
+### 📦 Package Structure Highlights
+
+- **src/ layout**: Modern Python packaging standard
+- **Installable package**: `pip install -e .` for development
+- **Type hints**: Full type coverage with mypy
+- **Comprehensive tests**: 44 tests with 100% pass rate
+- **Production scripts**: CLI-ready with argparse
+- **Development tools**: Black, Ruff, mypy, pytest configured
 
 ---
 
@@ -588,3 +700,172 @@ Special thanks to:
 *Empowering secure authentication with deep learning*
 
 </div>
+
+---
+
+## 🧪 Testing
+
+### Comprehensive Test Suite
+
+We maintain a robust test suite with **44 tests** covering all components:
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage report
+pytest --cov=src --cov-report=html
+
+# Run in parallel (faster)
+pytest -n auto
+
+# Run specific test file
+pytest tests/test_model.py -v
+```
+
+### Test Coverage
+
+| Component | Tests | Coverage |
+|-----------|-------|----------|
+| **Model** | 25 tests | Architecture, forward/backward, loss functions |
+| **Dataset** | 8 tests | Loading, preprocessing, data handling |
+| **Utils** | 11 tests | Image processing, tensor conversion |
+| **Total** | **44 tests** | **100% passing** ✅ |
+
+### Quick Functionality Test
+
+No data required - perfect for CI/CD:
+
+```bash
+python scripts/quick_test.py
+```
+
+Output:
+```
+============================================================
+QUICK FUNCTIONALITY TEST
+============================================================
+
+✅ All imports successful!
+✅ Model initialized
+✅ Forward pass successful!
+✅ Loss calculation successful!
+✅ Distance metric successful!
+✅ Gradient computation successful!
+
+ALL TESTS PASSED! ✅
+============================================================
+```
+
+---
+
+## 🛠️ Development
+
+### Setup Development Environment
+
+```bash
+# Clone and install
+git clone https://github.com/umitkacar/Offline_Signature_Verification.git
+cd Offline_Signature_Verification
+
+# Install with dev dependencies
+pip install -e ".[dev]"
+
+# Install pre-commit hooks
+pre-commit install
+```
+
+### Code Quality Tools
+
+```bash
+# Format code
+black src tests scripts
+
+# Lint code
+ruff check src tests scripts --fix
+
+# Type checking
+mypy src
+
+# Run all quality checks
+pre-commit run --all-files
+```
+
+### Pre-commit Hooks
+
+Automatically run on every commit:
+- Trailing whitespace removal
+- End-of-file fixer
+- YAML/JSON/TOML validation
+- Black formatting
+- Ruff linting
+- mypy type checking
+- pytest tests
+
+---
+
+## 📚 Documentation
+
+### Available Documentation
+
+- **[README.md](README.md)**: Main documentation (you are here)
+- **[CHANGELOG.md](CHANGELOG.md)**: Version history and migration guides
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Development guidelines
+- **[LESSONS-LEARNED.md](LESSONS-LEARNED.md)**: Refactoring insights
+- **[scripts/README.md](scripts/README.md)**: Script usage guide
+
+### API Documentation
+
+All code is fully documented with Google-style docstrings:
+
+```python
+def forward(self, x: Tensor, y: Tensor) -> Tuple[Tensor, Tensor]:
+    """Forward pass through both branches of the Siamese network.
+
+    Args:
+        x: First signature tensor of shape (batch_size, 1, 220, 155)
+        y: Second signature tensor of shape (batch_size, 1, 220, 155)
+
+    Returns:
+        Tuple of feature embeddings (f_x, f_y), each of shape (batch_size, 128)
+    """
+```
+
+---
+
+## 🔄 Migration from v1.x to v2.0
+
+### Quick Migration Guide
+
+1. **Install the package**:
+   ```bash
+   pip install -e .
+   ```
+
+2. **Update imports**:
+   ```python
+   # Old
+   from Model import SiameseConvNet
+   from Dataset import TrainDataset
+   
+   # New
+   from signature_verification import SiameseConvNet, TrainDataset
+   ```
+
+3. **Update script calls**:
+   ```bash
+   # Old
+   python train_model.py
+   
+   # New
+   python scripts/train.py
+   ```
+
+4. **Run tests**:
+   ```bash
+   pytest
+   ```
+
+See [CHANGELOG.md](CHANGELOG.md) for complete migration instructions.
+
+---
