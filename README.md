@@ -1,8 +1,9 @@
 <div align="center">
 
 # 🔐 Offline Signature Verification
+### *Siamese CNN for Banking-Optimized Signature Authentication*
 
-### *State-of-the-Art Deep Learning for Handwritten Signature Authentication*
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=1000&color=6366F1&center=true&vCenter=true&multiline=true&width=900&lines=Siamese+CNN+Architecture+%F0%9F%A7%A0;Banking-Grade+Fraud+Detection+%F0%9F%94%90;Contrastive+Learning+%2B+High+Recall+%E2%9A%A1" alt="Typing SVG" />
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
